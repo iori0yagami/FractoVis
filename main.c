@@ -49,10 +49,47 @@ void generate_mandelbrot(t_data *data)
                 r = temp;
                 iteration++;
             }
-            if (iteration == max_iter)
-                color = 0x00FFFFFF; 
-            else 
-                color = (iteration * 0xFF030507);
+            if (max_iter == iteration)
+                my_mlx_pixel_put(data, x, y, color);
+            else
+                int red = (iteration * 5 + 120) % 256;
+                int green = (iteration * 5 + 550) % 256;
+                int blue = (iteration * 5 + 290) % 256;
+        }
+    }
+}
+
+void    generate_julia(t_data *data, double cr,double ci)
+{
+    int x, y;
+    double real, imag;
+    double real_temp;
+    int max_iter = 1000;
+    int color;
+    int i;
+    for(int y = 0; y < HEIGHT; y++)
+    {
+        for(int x = 0; x < WIDTH; x++)
+        {
+            real = (x - (double)WIDTH / 2) / (0.5 * zoom * (double)WIDTH) + move_x;
+            imag = (y - (double)HEIGHT / 2) / (0.5 * zoom * (double)HEIGHT) + move_y;
+
+            int iteration = 0;
+            while (real * real + imag * imag <= 4.0 && iteration < max_iter)
+            {
+                real_temp = real * real - imag * imag + 0.1;
+                imag = 2 * real * imag + 0.7;
+                real = real_temp;
+                iteration++;
+            }
+           if (iteration == max_iter)
+                color = 0xFFFFFF; 
+            else{
+                 int red = (iteration * 5 + 120 ) % 256;
+                int green = (iteration * 7 + 550 ) % 256;
+                int blue = (iteration * 3 + 290 ) % 256;
+                color = 0x0000FF | (red << 16) | (green << 8) | blue;
+            }
             my_mlx_pixel_put(data, x, y, color);
         }
     }
